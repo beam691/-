@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hammy Yummy Profit Calculator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f7f7f7;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #ff6f61;
+      margin-bottom: 20px;
+    }
+    label {
+      margin: 10px 0;
+      font-size: 14px;
+    }
+    input {
+      padding: 8px;
+      font-size: 16px;
+      width: 150px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      outline: none;
+    }
+    input:focus {
+      border-color: #ff6f61;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #ff6f61;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #ff4a39;
+    }
+    #history {
+      margin-top: 30px;
+      width: 300px;
+    }
+    .entry {
+      background: #f0f0f0;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hammy Yummy Profit Calculator</h1>
+
+  <label>ต้นทุนต่อชิ้น (บาท):</label>
+  <input type="number" id="cost" placeholder="5"><br>
+
+  <label>ราคาขายต่อชิ้น (บาท):</label>
+  <input type="number" id="price" placeholder="10"><br>
+
+  <label>จำนวนขาย (ชิ้น):</label>
+  <input type="number" id="quantity" placeholder="20"><br>
+
+  <button onclick="calculateProfit()">คำนวณกำไร</button>
+
+  <h2 id="result"></h2>
+
+  <div id="history">
+    <h3>ประวัติการคำนวณ</h3>
+    <div id="history-list"></div>
+  </div>
+
+  <script>
+    const historyList = document.getElementById('history-list');
+    let history = JSON.parse(localStorage.getItem('profitHistory')) || [];
+
+    function updateHistory() {
+      historyList.innerHTML = '';
+      history.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'entry';
+        div.textContent = `ต้นทุน: ${item.cost} บาท, ขาย: ${item.price} บาท, จำนวน: ${item.quantity} → กำไร: ${item.profit} บาท`;
+        historyList.appendChild(div);
+      });
+    }
+
+    function calculateProfit() {
+      const cost = parseFloat(document.getElementById('cost').value);
+      const price = parseFloat(document.getElementById('price').value);
+      const quantity = parseInt(document.getElementById('quantity').value);
+
+      if (isNaN(cost) || isNaN(price) || isNaN(quantity)) {
+        alert('กรอกตัวเลขให้ครบทุกช่อง!');
+        return;
+      }
+
+      const profit = (price - cost) * quantity;
+      document.getElementById('result').textContent = `กำไรทั้งหมด: ${profit} บาท`;
+
+      history.push({ cost, price, quantity, profit });
+      localStorage.setItem('profitHistory', JSON.stringify(history));
+      updateHistory();
+    }
+
+    updateHistory();
+  </script>
+</body>
+</html>
+
